@@ -1,0 +1,5 @@
+﻿instructions:
+  - load_const: 630
+  - read: 421
+  - write: 421
+  - bswap

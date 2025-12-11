@@ -1,0 +1,6 @@
+﻿instructions:
+  - load_const: 0x00112233
+  - write: 300
+  - read: 300
+  - bswap
+  - write: 301

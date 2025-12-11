@@ -1,0 +1,3 @@
+﻿instructions:
+  - load_const: 630
+  - write: 100

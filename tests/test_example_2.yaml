@@ -1,0 +1,11 @@
+﻿instructions:
+  - load_const: 0x00000001
+  - write: 200
+  - load_const: 0x00000002
+  - write: 201
+  - read: 200
+  - bswap
+  - write: 202
+  - read: 201
+  - bswap
+  - write: 203

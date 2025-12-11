@@ -1,0 +1,15 @@
+﻿instructions:
+  - load_const: 100
+  - write: 10
+  - load_const: 200
+  - write: 11
+  - load_const: 300
+  - write: 12
+
+  # Копируем из 10, 11, 12 в 20, 21, 22
+  - read: 10
+  - write: 20
+  - read: 11
+  - write: 21
+  - read: 12
+  - write: 22

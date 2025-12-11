@@ -1,0 +1,53 @@
+﻿instructions:
+  - load_const: 0x12345678
+  - write: 0
+  - load_const: 0xabcdef00
+  - write: 1
+  - load_const: 0xfeedface
+  - write: 2
+  - load_const: 0xdeadbeef
+  - write: 3
+  - load_const: 0xcafebabe
+  - write: 4
+  - load_const: 0x11223344
+  - write: 5
+  - load_const: 0x55667788
+  - write: 6
+  - load_const: 0x99aabbcc
+  - write: 7
+  - load_const: 0xddeeff00
+  - write: 8
+  - load_const: 0x00ffeedd
+  - write: 9
+
+  # Применяем bswap к элементам 0–9
+  - read: 0
+  - bswap
+  - write: 0
+  - read: 1
+  - bswap
+  - write: 1
+  - read: 2
+  - bswap
+  - write: 2
+  - read: 3
+  - bswap
+  - write: 3
+  - read: 4
+  - bswap
+  - write: 4
+  - read: 5
+  - bswap
+  - write: 5
+  - read: 6
+  - bswap
+  - write: 6
+  - read: 7
+  - bswap
+  - write: 7
+  - read: 8
+  - bswap
+  - write: 8
+  - read: 9
+  - bswap
+  - write: 9
