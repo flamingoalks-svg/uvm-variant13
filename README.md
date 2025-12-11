@@ -577,4 +577,3 @@ else:
 Размер: 1 байт
 Действие: `value = stack.pop(); stack.push(bswap(value))`
 Тест: A=53 → 0x35
-```
