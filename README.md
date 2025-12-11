@@ -67,6 +67,7 @@
   - `--test-intermediate` - вывод промежуточного представления команд
   - `--test-bytecode` - вывод сгенерированного байт-кода в hex-формате
 
+ ```markdown
 **Формат входного файла (YAML)**:
 ```yaml
 instructions:
@@ -74,22 +75,23 @@ instructions:
   - read: <адрес>             # Чтение из памяти
   - write: <адрес>            # Запись в память
   - bswap                     # Побайтовый разворот (без аргумента)
+```
 Кодирование команд:
 
-load_const: 4 байта [46, b1, b2, b3], где b1,b2,b3 - little-endian представление константы
+`load_const`: 4 байта `[46, b1, b2, b3]`, где `b1,b2,b3` - little-endian представление константы
 
-read: 3 байта [44, a1, a2], где a1,a2 - little-endian представление адреса
+`read`: 3 байта `[44, a1, a2]`, где `a1,a2` - little-endian представление адреса
 
-write: 3 байта [51, a1, a2], где a1,a2 - little-endian представление адреса
+`write`: 3 байта `[51, a1, a2]`, где `a1,a2` - little-endian представление адреса
 
-bswap: 1 байт [53]
+`bswap`: 1 байт `[53]`
 
-**Модуль interpreter.py**
+**Модуль `interpreter.py`**
 Назначение: Исполнение бинарного машинного кода на виртуальной машине.
 
 Основные функции:
 
-interpret(code_file, memory_dump_file) - интерпретация бинарного кода
+`interpret(code_file, memory_dump_file)` - интерпретация бинарного кода
 
 Реализация стека для хранения промежуточных значений
 
@@ -117,57 +119,65 @@ interpret(code_file, memory_dump_file) - интерпретация бинарн
 
 Сохранение конечного состояния памяти в JSON-файл
 
-Модуль run.py
+**Модуль `run.py`**
 Назначение: Объединение ассемблера и интерпретатора в единый цикл обработки.
 
 Функционал:
 
 Прием параметров командной строки
 
-Последовательный вызов assembler.py и interpreter.py
+Последовательный вызов `assembler.py` и `interpreter.py`
 
 Вывод статусных сообщений о процессе выполнения
 
-Установка и настройка
+**Установка и настройка**
 Предварительные требования
 Python: версии 3.8 или выше
 
 Git: для работы с репозиторием
 
-Установка зависимостей
+**Установка зависимостей**
+```bash
 pip install -r requirements.txt
-Файл requirements.txt:
+```
+Файл `requirements.txt`:
 
-text
+```
 PyYAML>=6.0
-Использование
+```
+**Использование**
 1. Полный цикл обработки программы
-bash
+```bash
 python run.py <input.yaml> <output.bin> <memory.json>
+```
 Параметры:
 
-input.yaml - YAML-файл с исходной программой
+`input.yaml` - YAML-файл с исходной программой
 
-output.bin - бинарный файл с машинным кодом
+`output.bin` - бинарный файл с машинным кодом
 
-memory.json - JSON-файл с дампом памяти после выполнения
+`memory.json` - JSON-файл с дампом памяти после выполнения
 
 Пример:
 
- 
+```bash
 python run.py tests/test_copy_array.yaml program.bin result.json
+```
+
 2. Отдельное использование ассемблера
- 
+
+```bash
 python assembler.py <input.yaml> <output.bin> [--test-intermediate] [--test-bytecode]
+```
 Режимы тестирования:
 
---test-intermediate - вывод промежуточного представления (Этап 1)
+`--test-intermediate` - вывод промежуточного представления (Этап 1)
 
---test-bytecode - вывод байт-кода в hex-формате (Этап 2)
+`--test-bytecode` - вывод байт-кода в hex-формате (Этап 2)
 
 Примеры:
 
- 
+```bash
 # Базовое ассемблирование
 python assembler.py test_spec.yaml output.bin
 
@@ -176,16 +186,22 @@ python assembler.py test_spec.yaml output.bin --test-intermediate
 
 # С выводом байт-кода
 python assembler.py test_spec.yaml output.bin --test-bytecode
+```
+
 3. Отдельное использование интерпретатора
-bash
+```bash
 python interpreter.py <input.bin> <memory.json>
+```
 Пример:
 
- 
+```bash
 python interpreter.py program.bin memory_dump.json
-Тестирование
+```
+
+**Тестирование**
 Тест 1: Проверка соответствия спецификации
- 
+
+```bash
 # Создание тестовой программы
 cat > test_spec.yaml << 'EOF'
 instructions:
@@ -198,18 +214,24 @@ EOF
 # Проверка байт-кода
 python assembler.py test_spec.yaml spec.bin --test-bytecode
 # Ожидаемый вывод: AE 9D 00 00 2C 7C 00 33 A5 01 35
+```
 Тест 2: Копирование массива (Этап 3)
- 
+
+```bash
 python run.py tests/test_copy_array.yaml copy.bin copy.json
 cat copy.json
 # Ожидаемый результат: {"10": 100, "11": 200, "12": 300, "20": 100, "21": 200, "22": 300}
+```
 Тест 3: Вектор bswap (Этап 5)
- 
+
+```bash
 python run.py tests/test_bswap_vector.yaml vector.bin vector.json
 python -c "import json; data = json.load(open('vector.json')); print(f'Обработано элементов: {len(data)}')"
 # Ожидаемый результат: 10 элементов
+```
 Тест 4: Примеры программ (Этап 5)
- 
+
+```bash
 # Пример 1
 python run.py tests/test_example_1.yaml ex1.bin ex1.json
 
@@ -218,33 +240,39 @@ python run.py tests/test_example_2.yaml ex2.bin ex2.json
 
 # Пример 3
 python run.py tests/test_example_3.yaml ex3.bin ex3.json
-Примеры программ
+```
+
+**Примеры программ**
 Пример 1: Простая программа с bswap
-Файл: tests/test_example_1.yaml
- 
+Файл: `tests/test_example_1.yaml`
+
+```yaml
 instructions:
   - load_const: 1000
   - write: 100
   - read: 100
   - bswap
   - write: 101
+```
 Запуск:
 
- 
+```bash
 python run.py tests/test_example_1.yaml example.bin example.json
-Результат (файл example.json):
+```
+Результат (файл `example.json`):
 
- 
+```json
 {
   "100": 1000,
   "101": 3523215360
 }
+```
 Объяснение: Число 1000 (0x000003E8) после операции bswap преобразуется в 0xE8030000, что в десятичной системе равно 3523215360.
 
 Пример 2: Работа с несколькими ячейками памяти
-Файл: tests/test_example_2.yaml
+Файл: `tests/test_example_2.yaml`
 
- 
+```yaml
 instructions:
   - load_const: 0x00000001
   - write: 200
@@ -256,25 +284,29 @@ instructions:
   - read: 201
   - bswap
   - write: 203
+```
 Пример 3: Разворот конкретного числа
-Файл: tests/test_example_3.yaml
+Файл: `tests/test_example_3.yaml`
 
- 
+```yaml
 instructions:
   - load_const: 0x00112233
   - write: 300
   - read: 300
   - bswap
   - write: 301
+```
 Запуск:
- 
+
+```bash
 python run.py tests/test_example_3.yaml example3.bin example3.json
+```
 Результат: Число 0x00112233 (1122867) после bswap становится 0x33221100 (856887552).
 
 Пример 4: Копирование массива (Этап 3)
-Файл: tests/test_copy_array.yaml
+Файл: `tests/test_copy_array.yaml`
 
- 
+```yaml
 instructions:
   - load_const: 100
   - write: 10
@@ -290,12 +322,18 @@ instructions:
   - write: 21
   - read: 12
   - write: 22
+```
 Запуск:
- 
+
+```bash
 python run.py tests/test_copy_array.yaml copy.bin copy.json
+```
+```bash
 cat copy.json
+```
 Результат:
- 
+
+```json
 {
   "10": 100,
   "11": 200,
@@ -304,10 +342,12 @@ cat copy.json
   "21": 200,
   "22": 300
 }
-Пример 5: Векторная операция bswap (Этап 5)
-Файл: tests/test_bswap_vector.yaml
+```
 
- 
+Пример 5: Векторная операция bswap (Этап 5)
+Файл: `tests/test_bswap_vector.yaml`
+
+```yaml
 instructions:
   # Инициализация вектора из 10 элементов
   - load_const: 0x12345678
@@ -362,10 +402,13 @@ instructions:
   - read: 9
   - bswap
   - write: 9
+```
 Запуск:
 
- 
+```bash
 python run.py tests/test_bswap_vector.yaml vector.bin vector.json
+```
+```bash
 python -c "
 import json
 with open('vector.json', 'r') as f:
@@ -374,10 +417,12 @@ print('Обработано элементов:', len(data))
 for i in range(3):
     print(f'[{i}] = {data[str(i)]}')
 "
+```
+
 Пример 6: Проверка соответствия спецификации
 Создание тестового файла:
 
-
+```bash
 cat > my_test.yaml << 'EOF'
 instructions:
   - load_const: 100
@@ -386,51 +431,63 @@ instructions:
   - bswap
   - write: 2
 EOF
+```
 Запуск:
 
- 
+```bash
 python run.py my_test.yaml my_program.bin my_result.json
+```
+```bash
 cat my_result.json
-Работа с Git-репозиторием
+```
+
+**Работа с Git-репозиторием**
 Структура коммитов
 История разработки отражает поэтапное выполнение работы:
 
-Initial commit - базовая структура проекта
+`Initial commit` - базовая структура проекта
 
-Этап 1: Промежуточное представление - реализация ассемблера с YAML-парсингом
+`Этап 1: Промежуточное представление` - реализация ассемблера с YAML-парсингом
 
-Этап 2: Формирование машинного кода - генерация бинарного кода, режимы тестирования
+`Этап 2: Формирование машинного кода` - генерация бинарного кода, режимы тестирования
 
-Этап 3: Интерпретатор и память - модель памяти, команды load/read/write
+`Этап 3: Интерпретатор и память` - модель памяти, команды load/read/write
 
-Этап 4: Реализация АЛУ - команда bswap
+`Этап 4: Реализация АЛУ` - команда bswap
 
-Этап 5: Тестовая задача - вектор bswap, примеры программ
+`Этап 5: Тестовая задача` - вектор bswap, примеры программ
 
-Отладка и решение проблем
+**Отладка и решение проблем**
 Распространенные проблемы
 Ошибка "No such file or directory"
 
- 
+```bash
 # Проверьте существование файла
 ls -la <имя_файла>
 
 # Проверьте правильность пути
 python assembler.py ./tests/test_copy_array.yaml output.bin
+```
 Ошибка кодировки YAML-файла
- 
+
+```bash
 # Сохраняйте файлы в UTF-8
 # При сохранении выберите кодировку UTF-8
+```
 Ошибка импорта модулей
- 
+
+```bash
 # Убедитесь, что все файлы в одной директории
 ls assembler.py interpreter.py run.py
 
 # Проверьте рабочую директорию
 pwd
-Верификация правильности реализации
+```
+
+**Верификация правильности реализации**
 Для проверки соответствия спецификации выполните:
- 
+
+```bash
 # 1. Проверка байт-кода load_const 630
 python assembler.py test_spec.yaml verify.bin --test-bytecode
 # Должно вывести: AE 9D 00 00 ... 35
@@ -447,19 +504,22 @@ if data == expected:
 else:
     print('Ошибка в интерпретаторе')
 "
-Дополнительные материалы
+```
+
+**Дополнительные материалы**
 Формат JSON-дампа памяти
 Файл результата содержит состояние памяти после выполнения программы:
 
- 
+```json
 {
   "<адрес1>": <значение1>,
   "<адрес2>": <значение2>,
   ...
 }
+```
 Адреса представлены в виде строк, значения - 32-битные целые числа.
 
-Оптимизация производительности
+**Оптимизация производительности**
 Для больших программ можно рассмотреть:
 
 Кэширование результатов операций
@@ -468,7 +528,7 @@ else:
 
 Использование более эффективных структур данных
 
-Расширение функционала
+**Расширение функционала**
 Проект может быть расширен следующими способами:
 
 Добавление новых команд АЛУ
@@ -479,33 +539,42 @@ else:
 
 Поддержка подпрограмм и вызовов функций
 
-Приложение: Полная спецификация команд УВМ (вариант 13)
-load_const - Загрузка константы на стек
-Поле	Биты	Значение
-A	0-5	Код операции (46)
-B	6-31	Константа (26 бит)
+**Приложение: Полная спецификация команд УВМ (вариант 13)**
+`load_const` - Загрузка константы на стек
+| Поле | Биты | Значение |
+|------|------|----------|
+| A    | 0-5  | Код операции (46) |
+| B    | 6-31 | Константа (26 бит) |
+
 Размер: 4 байта
-Действие: stack.push(B)
+Действие: `stack.push(B)`
 Тест: A=46, B=630 → 0xAE, 0x9D, 0x00, 0x00
 
-read - Чтение из памяти на стек
-Поле	Биты	Значение
-A	0-5	Код операции (44)
-B	6-23	Адрес (18 бит)
+`read` - Чтение из памяти на стек
+| Поле | Биты | Значение |
+|------|------|----------|
+| A    | 0-5  | Код операции (44) |
+| B    | 6-23 | Адрес (18 бит) |
+
 Размер: 3 байта
-Действие: stack.push(memory[B])
+Действие: `stack.push(memory[B])`
 Тест: A=44, B=496 → 0x2C, 0x7C, 0x00
 
-write - Запись из стека в память
-Поле	Биты	Значение
-A	0-5	Код операции (51)
-B	6-23	Адрес (18 бит)
-Размер: 3 байта
-Действие: memory[B] = stack.pop()
+`write` - Запись из стека в память
+| Поле | Биты | Значение |
+|------|------|----------|
+| A    | 0-5  | Код операции (51) |
+| B    | 6-23 | Адрес (18 бит) |
 
-bswap - Побайтовый разворот
-Поле	Биты	Значение
-A	0-5	Код операции (53)
+Размер: 3 байта
+Действие: `memory[B] = stack.pop()`
+
+`bswap` - Побайтовый разворот
+| Поле | Биты | Значение |
+|------|------|----------|
+| A    | 0-5  | Код операции (53) |
+
 Размер: 1 байт
-Действие: value = stack.pop(); stack.push(bswap(value))
+Действие: `value = stack.pop(); stack.push(bswap(value))`
 Тест: A=53 → 0x35
+```
